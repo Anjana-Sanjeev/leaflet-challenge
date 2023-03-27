@@ -14,7 +14,7 @@ function createFeatures(earthquakeData) {
 
   function onEachFeature(feature, layer) {
     layer.bindPopup("<h3> Where: " + feature.properties.place + "</h3><hr><p>" + new Date(feature.properties.time) + "</p>" + 
-    "<br><h2> Magnitude: " + feature.properties.mag + "</h2>");
+    "<br><h2> Magnitude: " + feature.properties.mag + "</h2>" + "</p>" + "<br><h2> Depth: " + feature.geometry.coordinates[2] + "</h2>");
 
   }
 
@@ -24,8 +24,8 @@ function createFeatures(earthquakeData) {
 
     let options = {
         radius:feature.properties.mag*5,
-        fillColor: magnitudeColor(feature.properties.mag),
-        color: magnitudeColor(feature.properties.mag),
+        fillColor: depthColor(feature.geometry.coordinates[2]),
+        color: depthColor(feature.geometry.coordinates[2]),
         weight: 1,
         opacity: 0.9,
         fillOpacity: 0.40
@@ -49,20 +49,20 @@ function createFeatures(earthquakeData) {
 
 // Color circles based on magntitude
 
-function magnitudeColor(magnitude) {
+function depthColor(depth) {
 
   switch(true) {
-      case (1.0 <= magnitude && magnitude <= 2.5):
+      case (5 <= depth && depth <= 15):
         return "rgb(194, 30, 86)";
-      case (2.5 <= magnitude && magnitude <= 3.5):
+      case (15 <= depth && depth <= 25):
         return "rgb(124, 48, 48)";
-      case (3.5 <= magnitude && magnitude <= 4.5):
+      case (25 <= depth && depth <= 40):
         return "rgb(236, 88, 0)";
-      case (4.5 <= magnitude && magnitude <= 5.5):
+      case (40 <= depth && depth <= 60):
         return "rgb(128, 128, 0)";
-      case (5.5 <= magnitude && magnitude <= 8.0):
+      case (60 <= depth && depth <= 85):
         return "rgb(8, 24, 168)";
-      case (8.0 <= magnitude && magnitude <= 10.0):
+      case (85 <= depth && depth <= 120):
         return "rgb(128, 0, 0)";
       default:
         return "rgb(227, 66, 52)";
@@ -77,14 +77,14 @@ let legend = L.control({position: 'bottomright'});
 legend.onAdd = function (map) {
 
     let div = L.DomUtil.create('div', 'info legend'),
-        grades = [1.0, 2.5, 3.5, 4.5, 5.5, 8.0],
+        grades = [5, 15, 25, 40, 60, 85],
         labels = [];
 
     // loop through density intervals
 
     for (let i = 0; i < grades.length; i++) {
         div.innerHTML +=
-            '<i style="background:' + magnitudeColor(grades[i] + 1) + '"></i> ' +
+            '<i style="background:' + depthColor(grades[i] + 1) + '"></i> ' +
             grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
     }
 
